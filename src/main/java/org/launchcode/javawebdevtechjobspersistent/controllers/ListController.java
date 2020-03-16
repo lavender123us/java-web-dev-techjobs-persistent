@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.launchcode.javawebdevtechjobspersistent.models.JobData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -38,7 +39,7 @@ public class ListController {
 
         columnChoices.put("all", "All");
         columnChoices.put("employer", "Employer");
-        columnChoices.put("skills", "Skills");
+        columnChoices.put("skill", "Skill");
 
     }
 
@@ -52,7 +53,7 @@ public class ListController {
     @RequestMapping(value = "jobs")
     public String listJobsByColumnAndValue(Model model, @RequestParam String column, @RequestParam String value) {
         Iterable<Job> jobs;
-        if (column.toLowerCase().equals("all")){
+        if (column.toLowerCase().equals("all")) {
             jobs = jobRepository.findAll();
             model.addAttribute("title", "All Jobs");
         } else {
@@ -60,10 +61,9 @@ public class ListController {
             model.addAttribute("title", "Jobs with " + columnChoices.get(column) + ": " + value);
         }
         model.addAttribute("jobs", jobs);
-//        model.addAttribute("employers", employerRepository.findAll());
-//        model.addAttribute("skills", skillRepository.findAll());
 
         return "list-jobs";
 
     }
+
 }

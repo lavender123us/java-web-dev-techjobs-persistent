@@ -31,36 +31,39 @@ public class HomeController {
     @Autowired
     private SkillRepository skillRepository;
 
-
     @RequestMapping("")
     public String index(Model model) {
-
-        model.addAttribute("jobs", jobRepository.findAll());
+        model.addAttribute("title", "My Jobs");
 
         return "index";
     }
 
     @GetMapping("add")
     public String displayAddJobForm(Model model) {
-        model.addAttribute("title", "Add Job");
         model.addAttribute(new Job());
         model.addAttribute("employers", employerRepository.findAll());
+        model.addAttribute("skills", skillRepository.findAll());
         return "add";
     }
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob, Errors errors, Model model,
-                                    @RequestParam Employer employer,
                                     @RequestParam int employerId, @RequestParam List<Integer> skills) {
+
+        if (errors.hasErrors()) {
+
+            return "add";
+        }
+
+        Optional<Employer> result = employerRepository.findById(employerId);
+        Employer employer = result.get();
+        newJob.setEmployer(employer);
 
         List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
         newJob.setSkills(skillObjs);
 
-        if (errors.hasErrors()) {
-//            model.addAttribute("title", "Add Job");
-
-            return "add";
-        }
+        jobRepository.save(newJob);
+        model.addAttribute("jobs", jobRepository.findAll());
 
         return "redirect:";
     }
@@ -76,7 +79,7 @@ public class HomeController {
                 return "view";
 
             } else {
-                return "redirect:/";
+                return "redirect:../";
             }
 
     }
