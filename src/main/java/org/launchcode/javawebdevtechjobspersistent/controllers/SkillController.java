@@ -56,7 +56,7 @@ public class SkillController {
 
             return "skills/view";
         } else {
-            return "redirect:";
+            return "redirect:../";
         }
     }
 }
